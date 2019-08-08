@@ -12,6 +12,10 @@ class NoDataException(Exception):
 
 
 def runInputSequence(oldList='', newList=True, refresh=False):
+
+    if not os.path.exists('tickers'):
+        os.makedirs('tickers')
+
     if newList:
         name = getTickers()
         wsj.fetchSymbols('tickers/' + name + '.txt')

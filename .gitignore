@@ -7,3 +7,4 @@ tickers/*.txt
 tighten.py
 venv/
 .DS_Store
+.idea/
