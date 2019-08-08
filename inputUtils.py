@@ -5,7 +5,6 @@ from tqdm import tqdm
 import shutil
 import sys
 from pandas.errors import ParserError
-from pyexcelerate import Workbook
 
 
 

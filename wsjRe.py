@@ -1,5 +1,3 @@
-"""WSJ historical data downloader using multiprocessing"""
-
 import os
 from urllib.request import urlretrieve
 from urllib.error import HTTPError
@@ -55,7 +53,6 @@ def getURLs(fileName, retry=False, symbol=''):
 
 
 def retrieve(url_and_path):
-    """Fetch and save data. Ignore with response of 404."""
     try:
         urlretrieve(url_and_path[0], url_and_path[1])
     except HTTPError:

@@ -3,6 +3,8 @@ import numpy as np
 import portfolioUtils as pu
 from os import path
 import time
+
+
 print()
 print()
 print("Welcome to the portfolio optimizer.")
@@ -34,9 +36,10 @@ else:
 data = inputUtils.runInputSequence(newList=new, oldList=oldList.split(".")[0], refresh=refresh)
 yrqr = inputUtils.getYrQr(data)
 
-dret = pu.getReturns(data=data, dataqr=yrqr[1], datayr=yrqr[0])[0]
-qret = pu.getReturns(data=data, dataqr=yrqr[1], datayr=yrqr[0])[1]
-yret = pu.getReturns(data=data, dataqr=yrqr[1], datayr=yrqr[0])[2]
+rets = pu.getReturns(data=data, dataqr=yrqr[1], datayr=yrqr[0])
+dret = rets[0]
+qret = rets[1]
+yret = rets[2]
 
 cols = data.columns
 
