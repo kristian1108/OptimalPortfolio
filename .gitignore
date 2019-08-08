@@ -1,0 +1,9 @@
+_pycache_/
+*.pyc
+data/
+hide/
+scratch.py
+tickers/*.txt
+tighten.py
+venv/
+.DS_Store
