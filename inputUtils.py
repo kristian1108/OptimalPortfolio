@@ -5,6 +5,8 @@ from tqdm import tqdm
 import shutil
 import sys
 from pandas.errors import ParserError
+from pyexcelerate import Workbook
+
 
 
 class NoDataException(Exception):
@@ -122,10 +124,8 @@ def importData(directory, refresh=False):
             data.set_index('Date')
             data['Date'] = pd.to_datetime(data['Date'])
             data = data.sort_values(by='Date')
-            print("Saving as excel file.")
-            data.to_excel(savit+".xlsx")
             print("Saving as csv.")
-            data.to_csv(savit+".csv")
+            data.to_csv(savit + ".csv")
             print("All data successfully saved.")
         else:
             raise NoDataException
@@ -137,9 +137,11 @@ def importData(directory, refresh=False):
 
     else:
         savit = directory + "/" + directory.split("/")[1]
-        print("Reading data out of " + savit+".xlsx")
-        data = pd.read_excel(savit+".xlsx")
-        print("Data successfully read from " + savit+".xlsx")
+        print("Reading data out of " + savit+".csv")
+        data = pd.read_csv(savit+".csv")
+        data['Date'] = pd.to_datetime(data.Date)
+        data = data.drop('Unnamed: 0', axis=1)
+        print("Data successfully read from " + savit+".csv")
         return data
 
 
