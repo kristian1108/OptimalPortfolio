@@ -36,29 +36,40 @@ else:
 data = inputUtils.runInputSequence(newList=new, oldList=oldList.split(".")[0], refresh=refresh)
 yrqr = inputUtils.getYrQr(data)
 
+print("Computing returns...")
 rets = pu.getReturns(data=data, dataqr=yrqr[1], datayr=yrqr[0])
 dret = rets[0]
 qret = rets[1]
 yret = rets[2]
+print("Successfully computed returns.")
 
 cols = data.columns
 
-if refresh:
-    numassets = len(cols)-1
-else:
-    numassets = len(cols) - 2
+numassets = len(cols)-1
 
+print('Computing standard deviations...')
 ystd = yret.std(axis=0, skipna=True)
 dstd = dret.std(axis=0, skipna=True)
 qstd = qret.std(axis=0, skipna=True)
+print('Successfully computed standard deviations.')
 
+print('Computing average returns...')
 ymean = yret.mean(axis=0, skipna=True)
 dmean = dret.mean(axis=0, skipna=True)
 qmean = qret.mean(axis=0, skipna=True)
+print('Successfully computed average returns.')
 
+print('Computing covariance matrices...')
 qcov = qret.cov()
+print('Quarterly done')
 dcov = dret.cov()
+print('Daily done')
 ycov = yret.cov()
+print('Yearly done')
+print('Successfully computed covariance matrices.')
+print()
+print()
+
 
 startweight = 1/qcov.shape[1]
 

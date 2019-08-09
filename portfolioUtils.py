@@ -61,6 +61,7 @@ def holyGrail(initlweights, covariancematrix, thresh, meanreturns, p=False):
     bnds1 = [(0.01, 1)]
     bnds1 = bnds1*len(meanreturns)
 
+    print('Optimizing...')
     res = sp.minimize(s, initlweights, bounds=bnds, args=covariancematrix, constraints=cons, method="SLSQP")
     optweights = res.x
     optstd = res.fun
