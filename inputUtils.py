@@ -42,8 +42,8 @@ def importData(directory, refresh=False):
 
     overwrite = 'Y'
 
-    if os.path.exists(directory+".xlsx") and refresh:
-        overwrite = input(directory+".xlsx"+ " already exists. Would you like to overwrite it? (Y/N) ").upper()
+    if os.path.exists(directory+".csv") and refresh:
+        overwrite = input(directory+".csv"+ " already exists. Would you like to overwrite it? (Y/N) ").upper()
 
     if overwrite == 'Y' and refresh:
 
@@ -84,6 +84,10 @@ def importData(directory, refresh=False):
                         if not temp.empty:
                             successfulretry = True
                             print("Successfully found data for " + tick)
+                            print('Deleting ' + file)
+                            os.remove(file)
+                            print('Saving new .csv to ' + directory+"/"+tick+'.csv')
+                            temp.to_csv(directory+"/"+tick+'.csv')
 
                 if not successfulretry:
                     print("Unable to find data")

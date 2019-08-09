@@ -6,7 +6,6 @@ from sys import stderr
 import shutil
 
 
-
 def getURLs(fileName, retry=False, symbol=''):
 
     urlpath = []
