@@ -17,12 +17,17 @@ def getURLs(fileName, retry=False, symbol=''):
             shutil.rmtree('data/' + listFolder)
 
         os.makedirs('data/' + listFolder)
-        file = open(fileName)
-        for line in file.read().splitlines():
-            urlpath.append((
-                'http://quotes.wsj.com/' + line + '/historical-prices/download?num_rows=100000000000000&range_days=100000000000000&startDate=01/01/1970&endDate=01/01/2040',
-                'data/' + listFolder + '/' + line.split('/')[-1].rstrip() + '.csv'
-            ))
+
+        try:
+            file = open(fileName)
+            for line in file.read().splitlines():
+                urlpath.append((
+                    'http://quotes.wsj.com/' + line + '/historical-prices/download?num_rows=100000000000000&range_days=100000000000000&startDate=01/01/1970&endDate=01/01/2040',
+                    'data/' + listFolder + '/' + line.split('/')[-1].rstrip() + '.csv'
+                ))
+        except FileNotFoundError:
+            print('Unable to find list of tickers ' + fileName)
+
     else:
         tickers = []
         tickers.append('mutualfund/' + symbol)
@@ -66,7 +71,7 @@ def fetchSymbols(file, retry=False, symbol=''):
 
     urls_and_paths = getURLs(fileName=file, retry=retry, symbol=symbol)
     total_count = len(urls_and_paths)
-    with Pool(processes=8) as p:
+    with Pool(processes=4) as p:
         for i, _ in enumerate(p.imap(retrieve, urls_and_paths), 1):
             stderr.write('\rDownloading stock data from WSJ {0}%'.format(int(100*i/total_count)))
             print(" " + urls_and_paths[i-1][1])

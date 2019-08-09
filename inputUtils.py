@@ -57,6 +57,9 @@ def importData(directory, refresh=False):
             except ParserError:
                 print('Unable to read ' + file + ". Skipping.")
                 temp = pd.DataFrame()
+            except FileNotFoundError:
+                print('Unable to find ' + file + ". Skipping.")
+                temp = pd.DataFrame()
 
             successfulretry = True
 
@@ -80,6 +83,9 @@ def importData(directory, refresh=False):
                             temp = pd.read_csv('data/retry/'+efile)
                         except ParserError:
                             print('Unable to read ' + efile + ". Skipping.")
+                            temp = pd.DataFrame()
+                        except FileNotFoundError:
+                            print('Unable to fine ' + efile + ". Skipping.")
                             temp = pd.DataFrame()
                         if not temp.empty:
                             successfulretry = True
@@ -126,10 +132,12 @@ def importData(directory, refresh=False):
             data.set_index('Date')
             data['Date'] = pd.to_datetime(data['Date'])
             data = data.sort_values(by='Date')
-            cols = data.columns
 
-        for col in cols:
-            missing = data[col].iloc[-200:].isna().sum()
+        cols = data.columns
+
+        print("Trimming sparse data...")
+        for col in tqdm(cols):
+            missing = data[col].iloc[-400:].isna().sum()
             if missing > 10:
                 data = data.drop(col, axis=1)
 
@@ -144,7 +152,7 @@ def importData(directory, refresh=False):
         if os.path.exists('data/retry'):
             shutil.rmtree('data/retry')
 
-        return data
+        return data, directory
 
     else:
         savit = directory + "/" + directory.split("/")[1]
@@ -153,7 +161,7 @@ def importData(directory, refresh=False):
         data['Date'] = pd.to_datetime(data.Date)
         data = data.drop('Unnamed: 0', axis=1)
         print("Data successfully read from " + savit+".csv")
-        return data
+        return data, directory
 
 
 def getYrQr(data):

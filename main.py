@@ -1,7 +1,7 @@
 import inputUtils
 import numpy as np
 import portfolioUtils as pu
-from os import path
+import os
 import time
 
 
@@ -22,7 +22,7 @@ if old == 'NEW':
 else:
     new = False
     oldList = input("Please enter the name of the old list: ")
-    if path.exists('data/'+oldList):
+    if os.path.exists('data/'+oldList):
         refreshlet = input("Would you like to refresh the data? (Y/N) ").upper()
     else:
         refreshlet = 'Y'
@@ -33,7 +33,9 @@ else:
         refresh = False
 
 
-data = inputUtils.runInputSequence(newList=new, oldList=oldList.split(".")[0], refresh=refresh)
+inputs = inputUtils.runInputSequence(newList=new, oldList=oldList.split(".")[0], refresh=refresh)
+data = inputs[0]
+name = inputs[1]
 yrqr = inputUtils.getYrQr(data)
 
 print("Computing returns...")
@@ -92,8 +94,8 @@ while interval not in ['QUARTER', 'YEAR']:
 
 if interval == 'QUARTER':
     threshold = int(input("Enter your desired quarterly return in percent (Ex: 2): "))
-    pu.holyGrail(initlweights=weights, covariancematrix=qcovmatrix, thresh=threshold,
-                 meanreturns=qmeanmatrix, numassets=numassets, p=True, printmeans=qmean)
+    results = pu.holyGrail(initlweights=weights, covariancematrix=qcovmatrix, thresh=threshold,
+                            meanreturns=qmeanmatrix, numassets=numassets, p=True, printmeans=qmean)
 else:
     for col in ycov.columns:
         if (ycov[col].isnull().all()) and (not empty):
@@ -103,11 +105,20 @@ else:
             revert = input("Would you like to compute with quarterly data instead? (Y/N) ")
             if revert == 'Y':
                 threshold = int(input("Enter your desired quarterly return in percent (Ex: 2): "))
-                pu.holyGrail(initlweights=weights, covariancematrix=qcovmatrix, thresh=threshold,
-                             meanreturns=qmeanmatrix, numassets=numassets, p=True, printmeans=qmean)
-
+                results = pu.holyGrail(initlweights=weights, covariancematrix=qcovmatrix, thresh=threshold,
+                                        meanreturns=qmeanmatrix, numassets=numassets, p=True, printmeans=qmean)
 
     if not empty:
         threshold = int(input("Enter your desired yearly return in percent (Ex: 5): "))
-        pu.holyGrail(initlweights=weights, covariancematrix=ycovmatrix, thresh=threshold,
-                     meanreturns=ymeanmatrix, numassets=numassets, p=True, printmeans=ymean)
+        results = pu.holyGrail(initlweights=weights, covariancematrix=ycovmatrix, thresh=threshold,
+                                meanreturns=ymeanmatrix, numassets=numassets, p=True, printmeans=ymean)
+
+if not os.path.exists('optimizations'):
+    os.makedirs('optimizations')
+
+print('Saving optimized portfolio to ' + 'optimizations/'+name.split("/")[1]+'.xlsx')
+results[2].to_excel('optimizations/'+name.split("/")[1]+".xlsx")
+file = open('optimizations/'+name.split("/")[1]+".txt", 'w+')
+file.write("Standard deviation: " + str(results[1]) + "%.")
+file.close()
+print("Results successfully saved.")

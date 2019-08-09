@@ -3,6 +3,7 @@ import numpy as np
 import scipy.optimize as sp
 from numba import jit
 import time
+import sys
 
 
 #@jit(nopython=True, parallel=True)
@@ -50,11 +51,12 @@ def holyGrail(initlweights, covariancematrix, thresh, meanreturns, numassets, pr
 
     #@jit(nopython=True, parallel=True)
     def s(w, cov):
-        for i in w:
-            if i < 0:
-                return 100000000.00
+        var = float(np.dot(w.T, np.dot(cov, w)))
 
-        return math.sqrt(float(np.dot(w.T, np.dot(cov, w)))) * 100
+        if var < 0:
+            return sys.float_info.max
+        else:
+            return math.sqrt(var) * 100
 
     # The two constraints are the desired return and the weights summing to 1.
     cons = [{'type': 'eq', 'fun': r}, {'type': 'eq', 'fun': lambda x: (1 - sum(x))}]
