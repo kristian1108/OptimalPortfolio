@@ -122,11 +122,19 @@ def importData(directory, refresh=False):
                     print("Unable to process file " + file)
 
         if not data.empty:
-            savit = directory+"/"+directory.split("/")[1]
             data = data.iloc[::-1]
             data.set_index('Date')
             data['Date'] = pd.to_datetime(data['Date'])
             data = data.sort_values(by='Date')
+            cols = data.columns
+
+        for col in cols:
+            missing = data[col].iloc[-200:].isna().sum()
+            if missing > 10:
+                data = data.drop(col, axis=1)
+
+        if not data.empty:
+            savit = directory+"/"+directory.split("/")[1]
             print("Saving as csv.")
             data.to_csv(savit + ".csv")
             print("All data successfully saved.")

@@ -70,10 +70,18 @@ print('Successfully computed covariance matrices.')
 print()
 print()
 
+qmeanmatrix = qmean.values.reshape((1,numassets))
+dmeanmatrix = dmean.values.reshape((1,numassets))
+ymeanmatrix = ymean.values.reshape((1,numassets))
+
+ycovmatrix = ycov.values
+dcovmatrix = dcov.values
+qcovmatrix = qcov.values
 
 startweight = 1/qcov.shape[1]
 
 weights = np.full((numassets,1),startweight, dtype=float)
+numassets = len(ymean)
 
 interval = ''
 
@@ -84,7 +92,8 @@ while interval not in ['QUARTER', 'YEAR']:
 
 if interval == 'QUARTER':
     threshold = int(input("Enter your desired quarterly return in percent (Ex: 2): "))
-    pu.holyGrail(weights, qcov, threshold, qmean, p=True)
+    pu.holyGrail(initlweights=weights, covariancematrix=qcovmatrix, thresh=threshold,
+                 meanreturns=qmeanmatrix, numassets=numassets, p=True, printmeans=qmean)
 else:
     for col in ycov.columns:
         if (ycov[col].isnull().all()) and (not empty):
@@ -94,9 +103,11 @@ else:
             revert = input("Would you like to compute with quarterly data instead? (Y/N) ")
             if revert == 'Y':
                 threshold = int(input("Enter your desired quarterly return in percent (Ex: 2): "))
-                pu.holyGrail(weights, qcov, threshold, qmean, p=True)
+                pu.holyGrail(initlweights=weights, covariancematrix=qcovmatrix, thresh=threshold,
+                             meanreturns=qmeanmatrix, numassets=numassets, p=True, printmeans=qmean)
 
 
     if not empty:
         threshold = int(input("Enter your desired yearly return in percent (Ex: 5): "))
-        pu.holyGrail(weights, ycov, threshold, ymean, p=True)
+        pu.holyGrail(initlweights=weights, covariancematrix=ycovmatrix, thresh=threshold,
+                     meanreturns=ymeanmatrix, numassets=numassets, p=True, printmeans=ymean)

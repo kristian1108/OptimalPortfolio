@@ -1,19 +1,23 @@
 import math
 import numpy as np
-import sys
 import scipy.optimize as sp
-import inputUtils
+from numba import jit
+import time
 
+
+#@jit(nopython=True, parallel=True)
 def weightedReturn(returns, weights):
 
     return float(np.dot(returns, weights))*100
 
+
+#@jit(nopython=True, parallel=True)
 def weightedStd(cov, weights):
 
     return math.sqrt(float(np.dot(weights.T, np.dot(cov, weights))))*100
 
 
-def holyGrail(initlweights, covariancematrix, thresh, meanreturns, p=False):
+def holyGrail(initlweights, covariancematrix, thresh, meanreturns, numassets, printmeans, p=False):
 
     """
     This function is similar to the weightedReturns function
@@ -29,6 +33,7 @@ def holyGrail(initlweights, covariancematrix, thresh, meanreturns, p=False):
     being considered is average yearly returns.
     """
 
+    #@jit(nopython=True, parallel=True)
     def r(w):
         return thresh - float(np.dot(meanreturns, w)) * 100
 
@@ -43,10 +48,11 @@ def holyGrail(initlweights, covariancematrix, thresh, meanreturns, p=False):
     :returns weighted standard deviation of the portfolio
     """
 
+    #@jit(nopython=True, parallel=True)
     def s(w, cov):
         for i in w:
             if i < 0:
-                return sys.float_info.max
+                return 100000000.00
 
         return math.sqrt(float(np.dot(w.T, np.dot(cov, w)))) * 100
 
@@ -55,18 +61,22 @@ def holyGrail(initlweights, covariancematrix, thresh, meanreturns, p=False):
 
     # All assets must be assigned weights between 0 and 1
     bnds = [(0,1)]
-    bnds = bnds*len(meanreturns)
+    bnds = bnds*numassets
 
     # Alternatively, all assets must make up at least 1% of the portfolio
     bnds1 = [(0.01, 1)]
-    bnds1 = bnds1*len(meanreturns)
+    bnds1 = bnds1*numassets
 
     print('Optimizing...')
+
+    start_time = time.time()
     res = sp.minimize(s, initlweights, bounds=bnds, args=covariancematrix, constraints=cons, method="SLSQP")
+    print("--- %s seconds ---" % (time.time() - start_time))
+
     optweights = res.x
     optstd = res.fun
     std = (np.sqrt(np.diagonal(covariancematrix)))*100
-    pr = (meanreturns * 100).to_frame()
+    pr = (printmeans * 100).to_frame()
     pr['STD'] = std.tolist()
     pr['Weights'] = (optweights * 100).tolist()
     pr.columns = ['Avg Return', 'STD (%)', 'Weight (%)']
