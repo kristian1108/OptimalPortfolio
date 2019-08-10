@@ -89,20 +89,20 @@ interval = ''
 
 empty = False
 
-while interval not in ['QUARTER', 'YEAR']:
-    interval = input("Would you like to use quarterly or yearly data in the optimization? (quarter/year) ").upper()
+while interval not in ['Q', 'Y']:
+    interval = input("Would you like to use quarterly or yearly data in the optimization? (q/y) ").upper()
 
-if interval == 'QUARTER':
+if interval == 'Q':
     threshold = int(input("Enter your desired quarterly return in percent (Ex: 2): "))
     results = pu.holyGrail(initlweights=weights, covariancematrix=qcovmatrix, thresh=threshold,
-                            meanreturns=qmeanmatrix, numassets=numassets, p=True, printmeans=qmean)
+                            meanreturns=qmeanmatrix, numassets=numassets, printmeans=qmean, p=True)
 else:
     for col in ycov.columns:
         if (ycov[col].isnull().all()) and (not empty):
             empty = True
             print("Sorry, unable to compute yearly optimization due to a lack of sufficient yearly data for " + col)
             time.sleep(0.5)
-            revert = input("Would you like to compute with quarterly data instead? (Y/N) ")
+            revert = input("Would you like to compute with quarterly data instead? (Y/N) ").upper()
             if revert == 'Y':
                 threshold = int(input("Enter your desired quarterly return in percent (Ex: 2): "))
                 results = pu.holyGrail(initlweights=weights, covariancematrix=qcovmatrix, thresh=threshold,
