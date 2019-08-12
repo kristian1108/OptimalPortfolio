@@ -95,13 +95,17 @@ def holyGrail(initlweights, covariancematrix, thresh, meanreturns, numassets, pr
         print()
         print("The optimal portfolio based on a minimum return of " + str(thresh) + "% is:")
         print()
-        printit = pr['Weight (%)'] > 0.05
+        printit = pr['Weight (%)'] > 0.005
         print(pr[printit])
         print()
         print("The standard deviation of this portfolio is " + str(optstd) + "%.")
         print("The return is " + str(weightedReturn(meanreturns, optweights)) + "%.")
 
-    return optweights, optstd, pr
+    expreturn = weightedReturn(meanreturns, optweights)
+
+    pr = pr[pr['Weight (%)'] > 0.005]
+
+    return optweights, optstd, pr, expreturn
 
 
 def getReturns(data, dataqr, datayr):

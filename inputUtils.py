@@ -137,7 +137,7 @@ def importData(directory, refresh=False):
 
         print("Trimming sparse data...")
         for col in tqdm(cols):
-            missing = data[col].iloc[-400:].isna().sum()
+            missing = data[col].iloc[-500:].isna().sum()
             if missing > 10:
                 data = data.drop(col, axis=1)
 
@@ -175,7 +175,7 @@ def getYrQr(data):
     qr = []
 
     print("Filtering quarters and years... ")
-    for index, row in tqdm(data.iterrows()):
+    for index, row in data.iterrows():
 
         if row['Date'].year == currentyear:
             yr.append(row['Date'])
