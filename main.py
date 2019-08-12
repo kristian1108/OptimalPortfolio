@@ -32,8 +32,8 @@ if __name__ == "__main__":
         else:
             refresh = False
 
-
     inputs = inputUtils.runInputSequence(newList=new, oldList=oldList.split(".")[0], refresh=refresh)
+
     data = inputs[0]
     name = inputs[1]
     yrqr = inputUtils.getYrQr(data)
