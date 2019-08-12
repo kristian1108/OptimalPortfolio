@@ -6,7 +6,7 @@ Before you can run the program, you will need to do 3 things:
 1. Install python3 virtual environment. To do this, navigate to the cloned directory in your 
 terminal/command prompt and run `python3 -m venv /path/to/new/virtual/environment`. For example, `python3 -m venv venv` will 
 create the virtual environment in the current directory and name it `venv`.
-2. Activate the virtual environment by running `source venv/bin/activate`. (If you named your virtuanl environment something
+2. Activate the virtual environment by running `source venv/bin/activate`. (If you named your virtual environment something
 other than `venv`, you must replace `venv` with the name of your virtual environment)
 3. Install the requirements. `pip install -r requirements.txt`  
 
