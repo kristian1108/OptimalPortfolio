@@ -72,9 +72,12 @@ if __name__ == "__main__":
     print()
     print()
 
+
+
     qmeanmatrix = qmean.values.reshape((1,numassets))
     dmeanmatrix = dmean.values.reshape((1,numassets))
     ymeanmatrix = ymean.values.reshape((1,numassets))
+
 
     ycovmatrix = ycov.values
     dcovmatrix = dcov.values
@@ -88,6 +91,10 @@ if __name__ == "__main__":
     interval = ''
 
     empty = False
+
+    print(type(ymeanmatrix))
+    print(type(ymean))
+
 
     while interval not in ['Q', 'Y']:
         interval = input("Would you like to use quarterly or yearly data in the optimization? (q/y) ").upper()

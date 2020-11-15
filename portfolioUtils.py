@@ -6,13 +6,11 @@ import time
 import sys
 
 
-#@jit(nopython=True, parallel=True)
 def weightedReturn(returns, weights):
 
     return float(np.dot(returns, weights))*100
 
 
-#@jit(nopython=True, parallel=True)
 def weightedStd(cov, weights):
 
     return math.sqrt(float(np.dot(weights.T, np.dot(cov, weights))))*100

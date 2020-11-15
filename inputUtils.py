@@ -138,7 +138,8 @@ def importData(directory, refresh=False):
         print("Trimming sparse data...")
         for col in tqdm(cols):
             missing = data[col].iloc[-500:].isna().sum()
-            if missing > 10:
+            if missing > 50:
+                print(f'Dropping {col}')
                 data = data.drop(col, axis=1)
 
         if not data.empty:
